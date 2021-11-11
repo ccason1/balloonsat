@@ -41,8 +41,8 @@ The purpose is to understand how they manage the number of tasks that need to be
 
 ### 2.5. Cameras
 
-_Figure this out._
 1. Separate storage partition on SD card.
+2. Stream through WiFi (Ground Mode) or record to SD card (Flight Mode).
 
 ### 2.6. Sensorium
 
