@@ -13,7 +13,7 @@ The purpose is to understand how they manage the number of tasks that need to be
 
 ### 2.1. Power and system
 
-1. Start headless.
+1. Headless start with WiFi AP for admin.
 2. Graceful power-down on low-battery.
 3. Monitor and manage the lifecycle of sub-processes/threads.
 4. Monitor telemetry for critical conditions.
