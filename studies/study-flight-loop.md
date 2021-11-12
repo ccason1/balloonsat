@@ -16,7 +16,7 @@ The purpose is to understand how they manage the number of tasks that need to be
 1. Headless start with WiFi AP for admin.
 2. Graceful power-down on low-battery.
 3. Monitor and manage the lifecycle of sub-processes/threads.
-4. Monitor telemetry for critical conditions.
+4. Monitor telemetry for critical conditions (e.g. motion vs rest).
 5. Monitor power level.
 6. Monitor available memory.
 7. Monitor Iridium channel for uplink availability and commands.
@@ -51,5 +51,8 @@ The purpose is to understand how they manage the number of tasks that need to be
 
 ### 2.7. Telemetry
 
+## Givens
 
+1. 4-core processor (Broadcom BCM2711 SoC with a 1.5 GHz 64-bit quad-core ARM Cortex-A72 processor, with 1 MB shared L2 cache).
+2.  
 
