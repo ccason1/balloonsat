@@ -1,5 +1,5 @@
 #!/bin/sh
-DHCPCD_CONFIG="/etc/dhcpcd.con"f
+DHCPCD_CONFIG="/etc/dhcpcd.conf"
 DNSMASQ_CONFIG="/etc/dnsmasq.conf"
 HOSTAPD_CONFIG="/etc/hostapd/hostapd.conf"
 STATIC_HOST_IP="192.168.4.1/24"
