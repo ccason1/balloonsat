@@ -15,6 +15,7 @@
       | High-accuracy temperature | `sudo pip3 install adafruit-circuitpython-tmp117` | https://github.com/adafruit/Adafruit_CircuitPython_TMP117 | https://learn.adafruit.com/adafruit-tmp117-high-accuracy-i2c-temperature-monitor/python-circuitpython |
       | Enrironmental | `sudo pip3 install adafruit-circuitpython-bme680` | https://github.com/adafruit/Adafruit_CircuitPython_BME680 | https://learn.adafruit.com/adafruit-bme680-humidity-temperature-barometic-pressure-voc-gas/python-circuitpython |
       | IMU | `sudo pip3 install adafruit-circuitpython-icm20x` | https://github.com/adafruit/Adafruit_CircuitPython_ICM20X | https://learn.adafruit.com/adafruit-tdk-invensense-icm-20948-9-dof-imu/python-circuitpython |
+      | Voltage and current | `sudo pip3 install adafruit-circuitpython-ina219` | https://github.com/adafruit/Adafruit_CircuitPython_INA219 | https://learn.adafruit.com/adafruit-ina219-current-sensor-breakout/python-circuitpython |
    3. RockBLOCK libraries.
    4. GPS libraries.
    5. Camera?
