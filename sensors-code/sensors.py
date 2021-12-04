@@ -45,7 +45,7 @@ while True:
 #     print("Gyro X:%.2f, Y: %.2f, Z: %.2f rads/s" % (icm.gyro))
 #     print("Magnetometer X:%.2f, Y: %.2f, Z: %.2f uT" % (icm.magnetic))
     now = datetime.now()           
-    file.write(str(now)+","+str(tmp117.temperature)+","+str(bme680.temperature)+","+str(bme680.gas)+","+str(bme680.relative_humidity)+","+str(bme680.pressure)+","+str(bme680.altitude)+","+str(icm.acceleration)+","+str(icm.gyro)+","+str(icm.magnetic)+","+current_cpu_temp+"\n")
+    file.write(str(now)+","+str(tmp117.temperature)+","+str(bme680.temperature)+","+str(bme680.gas)+","+str(bme680.relative_humidity)+","+str(bme680.pressure)+","+str(bme680.altitude)+","+str(icm.acceleration)+","+str(icm.gyro)+","+str(icm.magnetic)+","+cpu_temp()+"\n")
     file.flush()
     i = i+1
     if (i == 500):
