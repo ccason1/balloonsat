@@ -19,6 +19,7 @@
    1. I2C enable.
    2. Camera enable.
    3. Serial enable.
+6. Transfer (R/W) between Micro SD and other storage.
 
 ## 2. Run ground test
 
