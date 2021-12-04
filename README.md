@@ -9,7 +9,7 @@
    3. Camera data (stills, videos).
 3. Libraries:
    1. Sensor libraries
-      | Sensor | Command line | Reference URL | Guide |
+      | Sensor | Installation | Reference URL | Guide |
       | --- | --- | --- | --- |
       | CircuitPython | `sudo pip3 install Adafruit-Blinka` | https://github.com/adafruit/Adafruit_Blinka | https://learn.adafruit.com/circuitpython-on-raspberrypi-linux |
       | High-accuracy temperature | `sudo pip3 install adafruit-circuitpython-tmp117` | https://github.com/adafruit/Adafruit_CircuitPython_TMP117 | https://learn.adafruit.com/adafruit-tmp117-high-accuracy-i2c-temperature-monitor/python-circuitpython |
