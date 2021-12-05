@@ -1,31 +1,31 @@
-PROCESS USED TO TEST POWER/SENSOR SETUP SAT 12/4
+# PROCESS USED TO TEST POWER/SENSOR SETUP SAT 12/4
 
--Updated R-pi OS to latest
+# Updated R-pi OS to latest
 
--installed blinka using:
+# installed blinka using:
   cd ~
   sudo pip3 install --upgrade adafruit-python-shell
   wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py
   sudo python3 raspi-blinka.py
 
--Updated libraries
+# Updated libraries
   pip3 install adafruit-circuitpython-lis3dh
 
--Installed battery board
+# Installed battery board
   cd ~
   git clone https://github.com/geekworm-com/x728
   cd x728
   chmod +x *.sh	
   sudo bash x728-v2.1.sh
-  *****REBOOT****
+#  *****REBOOT****
 
--Installed sensors
+# Installed sensors
   sudo pip3 install adafruit-circuitpython-ina219
   sudo pip3 install adafruit-circuitpython-tmp117
   sudo pip3 install adafruit-circuitpython-bme680
   sudo pip3 install adafruit-circuitpython-icm20x
 
--Cloned repos to get prebuilt test scripts
+# Cloned repos to get prebuilt test scripts
   cd ~
   git clone https://github.com/adafruit/Adafruit_CircuitPython_TMP117.git
   cd ~  
@@ -35,7 +35,7 @@ PROCESS USED TO TEST POWER/SENSOR SETUP SAT 12/4
   cd ~
   git clone https://github.com/adafruit/Adafruit_CircuitPython_INA219.git
 
--Test Scripts (Path depends on where repos were cloned to)
+# Test Scripts (Path depends on where repos were cloned to)
   /home/pi/ folder: 
     x728bat.py # Reading battery voltage
     x728pld.py # Testing AC power off/loss or power adapter failure detection
