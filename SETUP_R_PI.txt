@@ -1,0 +1,53 @@
+PROCESS USED TO TEST POWER/SENSOR SETUP SAT 12/4
+
+-Updated R-pi OS to latest
+
+-installed blinka using:
+  cd ~
+  sudo pip3 install --upgrade adafruit-python-shell
+  wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py
+  sudo python3 raspi-blinka.py
+
+-Updated libraries
+  pip3 install adafruit-circuitpython-lis3dh
+
+-Installed battery board
+  cd ~
+  git clone https://github.com/geekworm-com/x728
+  cd x728
+  chmod +x *.sh	
+  sudo bash x728-v2.1.sh
+  *****REBOOT****
+
+-Installed sensors
+  sudo pip3 install adafruit-circuitpython-ina219
+  sudo pip3 install adafruit-circuitpython-tmp117
+  sudo pip3 install adafruit-circuitpython-bme680
+  sudo pip3 install adafruit-circuitpython-icm20x
+
+-Cloned repos to get prebuilt test scripts
+  cd ~
+  git clone https://github.com/adafruit/Adafruit_CircuitPython_TMP117.git
+  cd ~  
+  git clone https://github.com/adafruit/Adafruit_CircuitPython_BME680.git
+  cd ~
+  git clone https://github.com/adafruit/Adafruit_CircuitPython_ICM20X.git
+  cd ~
+  git clone https://github.com/adafruit/Adafruit_CircuitPython_INA219.git
+
+-Test Scripts (Path depends on where repos were cloned to)
+  /home/pi/ folder: 
+    x728bat.py # Reading battery voltage
+    x728pld.py # Testing AC power off/loss or power adapter failure detection
+
+  /Adafruit_CircuitPython_INA219/examples/
+    ina219_simpletest.py # Reading current and voltage through ina219 sensor
+
+  /Adafruit_CircuitPython_TMP117/examples/
+    tmp117_simpletest.py # Reading tmp117 sensor
+
+  /Adafruit_CircuitPython_BME680/examples/
+    bme680_simpletest.py # Reading bme680 sensor
+
+  /Adafruit_CircuitPython_ICM20X/examples/
+    icm20x_icm20948_simpletest.py 
