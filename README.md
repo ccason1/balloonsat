@@ -23,14 +23,15 @@
 4. Drivers:
    1. Camera.
 5. Configuration:
-   1. I2C enable.
-   2. Camera enable.
-   3. Serial enable.
+   1. Adafruit script includes a lot of setup for the RPi.
+   2. I2C enable.
+   3. Camera enable.
+   4. Serial enable.
 6. Transfer (R/W) between Micro SD and other storage.
 
 ## 2. Run ground test
 
-Tests if the image has everything set up correctly.
+Tests if the image has everything set up correctly, including all the components.
 
 ## 3. Flight executive test
 
