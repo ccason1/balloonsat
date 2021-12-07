@@ -1,7 +1,7 @@
 ### Setup for testing UPS power and Qwiic sensors
 
 1. Update RPi OS to latest.  
-2. Install Adafruit blinka:
+2. Install [Adafruit Blinka](https://github.com/adafruit/Adafruit_Blinka) ([API reference](https://circuitpython.readthedocs.io/projects/blinka/en/latest/index.html)):
    ```
    cd ~
    sudo pip3 install --upgrade adafruit-python-shell
@@ -44,13 +44,13 @@
 
 Path depends on where repos were cloned to.  
 1. In `/home/pi/` directory: 
-   1. Read battery voltage: `x728bat.py`  
-   2. Test AC power off/loss or power adapter failure: `detectionx728pld.py`  
+   1. Read battery voltage: `python x728bat.py`  
+   2. Test AC power off/loss or power adapter failure: `python detectionx728pld.py`  
 2. In `/Adafruit_CircuitPython_INA219/examples/` directory:
-   1. Read current and voltage through ina219 sensor: `ina219_simpletest.py`  
+   1. Read current and voltage through ina219 sensor: `python ina219_simpletest.py`  
 3. In `/Adafruit_CircuitPython_TMP117/examples/` directory:
-   1. Read tmp117 sensor: `tmp117_simpletest.py`  
+   1. Read tmp117 sensor: `python tmp117_simpletest.py`  
 4. In `/Adafruit_CircuitPython_BME680/examples/` directory:  
-   1. Read bme680 sensor: `bme680_simpletest.py`  
+   1. Read bme680 sensor: `python bme680_simpletest.py`  
 5. In `/Adafruit_CircuitPython_ICM20X/examples/` directory:
-   1. `icm20x_icm20948_simpletest.py`  
+   1. `python icm20x_icm20948_simpletest.py`  
