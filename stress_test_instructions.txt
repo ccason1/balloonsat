@@ -1,6 +1,0 @@
-# to install the stress tester run this command in the terminal window, if it is already installed ignore this step.
-sudo apt-get install stress
-#to run the stress test for 3 workers for 1 minute run this command in the terminal window
-sudo stress --cpu 3 --timeout 60
-#Note: each worker will run the cpu at 25% each, so 3 workers should have the cpu usage at approximately 75%
-#Note: the number after --timeout will run the stress test for the amount of SECONDS desired. 
