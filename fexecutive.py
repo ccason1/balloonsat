@@ -18,11 +18,7 @@ import busio
 from time import sleep
 from picamera import PiCamera
 from datetime import datetime
-from gps3 import agps3
-#import coordTransform_py.coordTransform_utils as transform 
-
-# TODO: GPS, RockBLOCK, Quadcam array
-
+#from gps3 import agps3
 
 # 2. setup all components
 GPIO_PORT = 26          # psu
@@ -35,26 +31,24 @@ file =open("/home/pi/lawn_demo/data_log.cvs","a")
 i2c = board.I2C()  # uses board.SCL and board.SDA
 
 bme680 = adafruit_bme680.Adafruit_BME680_I2C(i2c, debug=False)
-#tmp117 = adafruit_tmp117.TMP117(i2c)
+tmp117 = adafruit_tmp117.TMP117(i2c)
 icm = adafruit_icm20x.ICM20948(i2c)
 ina = INA219(i2c)
 
 #GPSDSocket creates a GPSD socket connection & request/retrieve GPSD output.
-gps_socket = agps3.GPSDSocket()
+#gps_socket = agps3.GPSDSocket()
+
 #DataStream unpacks the streamed gpsd data into python dictionaries.
-data_stream = agps3.DataStream()
-gps_socket.connect()
-gps_socket.watch()
+#data_stream = agps3.DataStream()
+#gps_socket.connect()
+#gps_socket.watch()
 
-gcj02_lng_lat = [0.0,0.0]
-bd09_lng_lat = [0.0,0.0]
+#gcj02_lng_lat = [0.0,0.0]
+#bd09_lng_lat = [0.0,0.0]
 
-for new_data in gps_socket:
-    if new_data:
-        data_stream.unpack(new_data)
-        # if data_stream.lat != 'n/a' and data_stream.lon != 'n/a':
-        #   gcj02_lng_lat = transform.wgs84_to_gcj02(float(data_stream.lon),float(data_stream.lat))
-        #   bd09_lng_lat = transform.wgs84_to_bd09(float(data_stream.lon),float(data_stream.lat))
+# for new_data in gps_socket:
+#     if new_data:
+#         data_stream.unpack(new_data)
 
 bme680.sea_level_pressure = 1013.25
 temperature_offset = -5
@@ -80,16 +74,16 @@ def cpu_temp():
     temp = temp.replace("\n","")
     return (temp.replace("temp=",""))
 
+# if os.stat("/home/pi/lawn_demo/data_log.cvs").st_size == 0:
+#     file.write("time,to,ti,gas,hum,press,alt,accx,accy,accz," +
+#         "gyrox,gyroy,gyroz,magnx,magny,magnz,vbus,ibus,pbus,tc,lat,lon\n")
 if os.stat("/home/pi/lawn_demo/data_log.cvs").st_size == 0:
-    # file.write("time,to,ti,gas,hum,press,alt,accx,accy,accz," +
-    #     "gyrox,gyroy,gyroz,magnx,magny,magnz,vbus,ibus,pbus,tc\n")
-    file.write("time,ti,gas,hum,press,alt,accx,accy,accz," +
-        "gyrox,gyroy,gyroz,magnx,magny,magnz,vbus,ibus,pbus,tc,lat,lon\n")
+    file.write("time,to,ti,gas,hum,press,alt,accx,accy,accz," +
+        "gyrox,gyroy,gyroz,magnx,magny,magnz,vbus,ibus,pbus,tc\n")
 
 # 3. start wifi hot spot and streaming as a separate process
 #       systemctl enable hostapd 
 #       systemctl enable dnsmasq
-# TODO: Ugh!
 
 # 4. while loop running with 10 seconds delay after last iteration
 #        check power levels (voltage and capacity %)
@@ -103,7 +97,7 @@ if os.stat("/home/pi/lawn_demo/data_log.cvs").st_size == 0:
 #        every minute (or every 6th iteration) attempt to send them over iridium
 
 shut_down = False
-for _ in range(10):
+while True:
     # check for low voltage
     voltage = read_voltage(bus)
     print("Voltage: ", voltage)
@@ -126,11 +120,11 @@ for _ in range(10):
     # data_points = [tmp117.temperature, bme680.temperature, bme680.gas, 
     #     bme680.relative_humidity, bme680.pressure, bme680.altitude, 
     #     *icm.acceleration, *icm.gyro, *icm.magnetic, ina.bus_voltage, 
-    #     ina.current, ina.power, data_stream.lat, data_tream.lon]
-    data_points = [bme680.temperature, bme680.gas, 
+    #     ina.current, ina.power,data_stream.lat,data_stream.lon]
+    data_points = [tmp117.temperature, bme680.temperature, bme680.gas, 
         bme680.relative_humidity, bme680.pressure, bme680.altitude, 
         *icm.acceleration, *icm.gyro, *icm.magnetic, ina.bus_voltage, 
-        ina.current, ina.power,data_stream.lat,data_stream.lon]
+        ina.current, ina.power]
 
     # truncate to 2 decimal places
     as_string = ','.join([str(round(d, 2)) for d in data_points])
@@ -142,6 +136,8 @@ for _ in range(10):
     # append line to telemetry file
     file.write(line)
     file.flush()
+
+    time.sleep(30)
 
 # close telemetry file
 file.close()
