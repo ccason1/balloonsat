@@ -5,7 +5,9 @@ import board
 import adafruit_bme680
 import adafruit_tmp117
 import adafruit_icm20x
+from adafruit_ina219 import ADCResolution, BusVoltageRange, INA219
 import psutil
+import busio
 from time import sleep
 from picamera import PiCamera
 from datetime import datetime
@@ -17,6 +19,9 @@ i2c = board.I2C()  # uses board.SCL and board.SDA
 tmp117 = adafruit_tmp117.TMP117(i2c)
 i2c = board.I2C()  # uses board.SCL and board.SDA
 icm = adafruit_icm20x.ICM20948(i2c)
+i2c = busio.I@C(board.SCL, board.SDA)
+i2c_bus = board.I2C()
+ina = INA219(i2c_bus)
 camera = PiCamera()
 loop_counter = 1
 bme680.sea_level_pressure = 1013.25
@@ -30,7 +35,7 @@ def cpu_temp():
     return (temp.replace("temp=",""))
 
 if os.stat("/home/pi/EOSS-317/data_log.cvs").st_size == 0:
-     file.write("Time,TMP,Env_temp,gas,humidity,pressure,altitude,acceleration_x,acceleration_y,acceleration_z,gyro_x,gyro_y,gyro_z,magnitometer_x,magnitometer_y,magnitometer_z,CPU_temp,\n")
+     file.write("Time,TMP,Env_temp,gas,humidity,pressure,altitude,acceleration_x,acceleration_y,acceleration_z,gyro_x,gyro_y,gyro_z,magnitometer_x,magnitometer_y,magnitometer_z,CPU_temp,bus_voltage,current,power\n")
 
 camera.start_recording('/home/pi/EOSS-317/testvideo%s.h264' % video_count)
 
@@ -45,7 +50,7 @@ while True:
 #     print("Gyro X:%.2f, Y: %.2f, Z: %.2f rads/s" % (icm.gyro))
 #     print("Magnetometer X:%.2f, Y: %.2f, Z: %.2f uT" % (icm.magnetic))
     now = datetime.now()           
-    file.write(str(now)+","+str(tmp117.temperature)+","+str(bme680.temperature)+","+str(bme680.gas)+","+str(bme680.relative_humidity)+","+str(bme680.pressure)+","+str(bme680.altitude)+","+str(icm.acceleration)+","+str(icm.gyro)+","+str(icm.magnetic)+","+cpu_temp()+"\n")
+    file.write(str(now)+","+str(tmp117.temperature)+","+str(bme680.temperature)+","+str(bme680.gas)+","+str(bme680.relative_humidity)+","+str(bme680.pressure)+","+str(bme680.altitude)+","+str(icm.acceleration)+","+str(icm.gyro)+","+str(icm.magnetic)+","+cpu_temp()+","+str(ina.bus_voltage)","+str(ina.current)","+str(ina.power)"\n")
     file.flush()
     i = i+1
     if (i == 500):
