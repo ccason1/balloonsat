@@ -18,17 +18,14 @@ from datetime import datetime
 
 
 # 2. setup all components
-file =open("/home/pi/EOSS-317/data_log.cvs","a")
+file =open("/home/pi/lawn_demo/data_log.cvs","a")
 
 i2c = board.I2C()  # uses board.SCL and board.SDA
 
 bme680 = adafruit_bme680.Adafruit_BME680_I2C(i2c, debug=False)
 tmp117 = adafruit_tmp117.TMP117(i2c)
 icm = adafruit_icm20x.ICM20948(i2c)
-
-# i2c = busio.I2C(board.SCL, board.SDA)
-i2c_bus = board.I2C()
-ina = INA219(i2c_bus)
+ina = INA219(i2c)
 
 bme680.sea_level_pressure = 1013.25
 temperature_offset = -5
@@ -39,8 +36,12 @@ def cpu_temp():
     temp = temp.replace("\n","")
     return (temp.replace("temp=",""))
 
+if os.stat("/home/pi/lawn_demo/data_log.cvs").st_size == 0:
+    file.write("time,to,ti,gas,hum,press,alt,accx,accy,accz,gyrox,gyroy,gyroz,magnx,magny,magnz,vbus,ibus,pbus,tc\n")
 
 # 3. start wifi hot spot and streaming as a separate process
+# TODO: Ugh!
+
 # 4. while loop running with 10 seconds delay after last iteration
 #        check power levels (voltage and capacity %)
 #        if low
@@ -50,14 +51,17 @@ def cpu_temp():
 #            stop all spawned processes
 #            shutdown     
 #        read all telemetry values and log them
-# if os.stat("/home/pi/EOSS-317/data_log.cvs").st_size == 0:
-#      file.write("Time,TMP,Env_temp,gas,humidity,pressure,altitude,acceleration_x,acceleration_y,acceleration_z,gyro_x,gyro_y,gyro_z,magnitometer_x,magnitometer_y,magnitometer_z,CPU_temp,bus_voltage,current,power\n")
 #        every minute (or every 6th iteration) attempt to send them over iridium
 
+for _ in range(10):
+    now = datetime.now()  # TODO: hh:mm only
+    data_points = [tmp117.temperature, bme680.temperature, bme680.gas, bme680.relative_humidity, bme680.pressure, bme680.altitude, *icm.acceleration, *icm.gyro, *icm.magnetic, ina.bus_voltage, ina.current, ina.power]
+    as_string = ','.join([str(round(d, 2)) for d in data_points])
+    file.write(str(now) + ',' + as_string + ',' + cpu_temp())
+    file.flush()
 
 
-
-
+file.close()
 
 
 #
