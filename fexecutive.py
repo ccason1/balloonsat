@@ -47,6 +47,13 @@ def read_voltage(bus):
     voltage = swapped * 1.25 /1000 /16
     return voltage
 
+def read_capacity(bus):
+    address = I2C_ADDR
+    read = bus.read_word_data(address, 4)
+    swapped = struct.unpack("<H", struct.pack(">H", read))[0]
+    capacity = swapped /256
+    return capacity
+
 
 def cpu_temp():
     temp = os.popen("vcgencmd measure_temp").readline()
@@ -74,17 +81,25 @@ if os.stat("/home/pi/lawn_demo/data_log.cvs").st_size == 0:
 #        read all telemetry values and log them
 #        every minute (or every 6th iteration) attempt to send them over iridium
 
+shut_down = False
 for _ in range(10):
     # check for low voltage
-    if read_voltage(bus) < 3.00:
-        print("Low voltage (<3.00V)")
+    voltage = read_voltage(bus)
+    print("Voltage: ", voltage)
+    capacity = read_capacity(bus)
+    print("Capacity: ", capacity)
+    if voltage < 3.00 or capacity < 20:
+        msg = "Battery low (<3.00V or <20%)"
+        file.write(msg)
+        print(msg)
+        shut_down = True
         break
 
     # get timestamp w/o microseconds
     now = datetime.now()
     now = now.replace(microsecond=0)  # truncate ms
     now.strftime('%y-%m-%d %H:%M:&S')
-    print(now)
+    # print(now)
 
     # get sensor data points
     # data_points = [tmp117.temperature, bme680.temperature, bme680.gas, 
@@ -111,5 +126,8 @@ for _ in range(10):
 file.close()
 
 # shut down
-print("Shutting down in 60 sec")
-run("shutdown --poweroff 1", shell=True)
+if shut_down:
+    print("Shutting down in 60 sec")
+    run("shutdown --poweroff 1", shell=True)
+else:
+    print("Done")
