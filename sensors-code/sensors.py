@@ -13,17 +13,23 @@ from picamera import PiCamera
 from datetime import datetime
 
 file =open("/home/pi/EOSS-317/data_log.cvs","a")
+
 i2c = board.I2C()  # uses board.SCL and board.SDA
 bme680 = adafruit_bme680.Adafruit_BME680_I2C(i2c, debug=False)
-i2c = board.I2C()  # uses board.SCL and board.SDA
 tmp117 = adafruit_tmp117.TMP117(i2c)
-i2c = board.I2C()  # uses board.SCL and board.SDA
 icm = adafruit_icm20x.ICM20948(i2c)
-i2c = busio.I@C(board.SCL, board.SDA)
-i2c_bus = board.I2C()
-ina = INA219(i2c_bus)
+
+# TODO: ???
+#i2c = busio.I2C(board.SCL, board.SDA)
+
+# TODO: ???
+# i2c_bus = board.I2C()
+# ina = INA219(i2c_bus)
+
+ina = INA219(i2c)
+
 camera = PiCamera()
-loop_counter = 1
+#loop_counter = 1
 bme680.sea_level_pressure = 1013.25
 i = 0
 video_count = 0
@@ -50,7 +56,7 @@ while True:
 #     print("Gyro X:%.2f, Y: %.2f, Z: %.2f rads/s" % (icm.gyro))
 #     print("Magnetometer X:%.2f, Y: %.2f, Z: %.2f uT" % (icm.magnetic))
     now = datetime.now()           
-    file.write(str(now)+","+str(tmp117.temperature)+","+str(bme680.temperature)+","+str(bme680.gas)+","+str(bme680.relative_humidity)+","+str(bme680.pressure)+","+str(bme680.altitude)+","+str(icm.acceleration)+","+str(icm.gyro)+","+str(icm.magnetic)+","+cpu_temp()+","+str(ina.bus_voltage)","+str(ina.current)","+str(ina.power)"\n")
+    file.write(str(now)+","+str(tmp117.temperature)+","+str(bme680.temperature)+","+str(bme680.gas)+","+str(bme680.relative_humidity)+","+str(bme680.pressure)+","+str(bme680.altitude)+","+str(icm.acceleration)+","+str(icm.gyro)+","+str(icm.magnetic)+","+cpu_temp()+","+str(ina.bus_voltage)+","+str(ina.current)+","+str(ina.power)+"\n")
     file.flush()
     i = i+1
     if (i == 500):
