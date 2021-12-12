@@ -26,7 +26,7 @@ I2C_ADDR = 0x36         # psu
 
 bus = smbus.SMBus(1)    # psu
 
-file =open("/home/pi/lawn_demo/data_log.cvs","a")
+file =open("/home/pi/lawn_demo/data_log.csv","a")
 
 i2c = board.I2C()  # uses board.SCL and board.SDA
 
