@@ -4,3 +4,12 @@
 2. Available data sources should be listed and, later, have a cmd-line selector app for confirmation. Default is all identified into one line.
 3. Data source database should have all sources described in detail.
 4. Each source should be quantized and compressed to save room in telemetry messages. Hex or base-64 integers can save a lot of room. The codec should be available on both sides of the telemetry link.
+
+# Integration
+
+1. Sensorium.
+2. Telemetry.
+3. Storage.
+4. Log management and live analytics.
+5. COSMOS.
+6. Data on demand with MT messages.
