@@ -105,7 +105,7 @@ while True:
     capacity = read_capacity(bus)
     print("Capacity: ", capacity)
     if voltage < 3.00 or capacity < 20:
-        msg = "Battery low (vol<3.00V or cap<20%) vol=" + voltage + " cap=" + capacity
+        msg = "Battery low (vol<3.00V or cap<20%) vol=" + str(voltage) + " cap=" + str(capacity)
         telemetry_file.write(msg)
         print(msg)
         shut_down = True
