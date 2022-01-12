@@ -26,7 +26,8 @@ I2C_ADDR = 0x36         # psu
 
 bus = smbus.SMBus(1)    # psu
 
-file =open("/home/pi/jan22_flight_prep/data_log.csv","a")
+TELEMETRY_FILENAME = "/home/pi/jan22_flight_prep/data_log.csv"
+telemetry_file =open(TELEMETRY_FILENAME,"a")
 
 i2c = board.I2C()  # uses board.SCL and board.SDA
 
@@ -77,8 +78,8 @@ def cpu_temp():
 # if os.stat("/home/pi/lawn_demo/data_log.cvs").st_size == 0:
 #     file.write("time,to,ti,gas,hum,press,alt,accx,accy,accz," +
 #         "gyrox,gyroy,gyroz,magnx,magny,magnz,vbus,ibus,pbus,tc,lat,lon\n")
-if os.stat("/home/pi/lawn_demo/data_log.cvs").st_size == 0:
-    file.write("time,to,ti,gas,hum,press,alt,accx,accy,accz," +
+if os.stat(TELEMETRY_FILENAME).st_size == 0:
+    telemetry_file.write("time,to,ti,gas,hum,press,alt,accx,accy,accz," +
         "gyrox,gyroy,gyroz,magnx,magny,magnz,vbus,ibus,pbus,tc\n")
 
 # 3. start wifi hot spot and streaming as a separate process
@@ -105,7 +106,7 @@ while True:
     print("Capacity: ", capacity)
     if voltage < 3.00 or capacity < 20:
         msg = "Battery low (vol<3.00V or cap<20%) vol=" + voltage + " cap=" + capacity
-        file.write(msg)
+        telemetry_file.write(msg)
         print(msg)
         shut_down = True
         break
@@ -134,17 +135,17 @@ while True:
     # print(len(line))  # 126 w/ tmp117
 
     # append line to telemetry file
-    file.write(line)
-    file.flush()
+    telemetry_file.write(line)
+    telemetry_file.flush()
 
     time.sleep(30)
 
 # close telemetry file
-file.close()
+telemetry_file.close()
 
 # shut down
 if shut_down:
     print("Shutting down in 60 sec")
     run("shutdown --poweroff 1", shell=True)
 else:
-    print("Done")
+    print("Not shutting down. Exiting...")
