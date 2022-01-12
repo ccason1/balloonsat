@@ -104,7 +104,7 @@ while True:
     capacity = read_capacity(bus)
     print("Capacity: ", capacity)
     if voltage < 3.00 or capacity < 20:
-        msg = "Battery low (<3.00V or <20%)"
+        msg = "Battery low (vol<3.00V or cap<20%) vol=" + voltage + " cap=" + capacity
         file.write(msg)
         print(msg)
         shut_down = True
