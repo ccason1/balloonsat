@@ -26,7 +26,7 @@ I2C_ADDR = 0x36         # psu
 
 bus = smbus.SMBus(1)    # psu
 
-TELEMETRY_FILENAME = "/home/pi/jan22_flight_prep/data_log.csv"
+TELEMETRY_FILENAME = "/home/pi/jan28_flight_prep/data_log.csv"
 telemetry_file =open(TELEMETRY_FILENAME,"a")
 
 i2c = board.I2C()  # uses board.SCL and board.SDA
