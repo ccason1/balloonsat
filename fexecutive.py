@@ -1,6 +1,7 @@
 from subprocess import run
 
 # 1. all necessary imports
+# TODO: What is imported for what, in EOL comments
 import sys
 import smbus
 import struct
@@ -18,6 +19,8 @@ import busio
 from time import sleep
 from picamera import PiCamera
 from datetime import datetime
+import serial
+from adafruit_rockblock import RockBlock
 #from gps3 import agps3
 
 # 2. setup all components
@@ -35,6 +38,9 @@ bme680 = adafruit_bme680.Adafruit_BME680_I2C(i2c, debug=False)
 tmp117 = adafruit_tmp117.TMP117(i2c)
 icm = adafruit_icm20x.ICM20948(i2c)
 ina = INA219(i2c)
+
+uart = serial.Serial("/dev/ttyUSB0", 19200)
+rb = RockBlock(uart)
 
 #GPSDSocket creates a GPSD socket connection & request/retrieve GPSD output.
 #gps_socket = agps3.GPSDSocket()
@@ -132,13 +138,29 @@ while True:
 
     # compose data line
     line = str(now) + ',' + as_string + ',' + cpu_temp() + '\n'
-    # print(len(line))  # 126 w/ tmp117
+    print(len(line))  # 126 w/ tmp117
 
     # append line to telemetry file
     telemetry_file.write(line)
     telemetry_file.flush()
 
-    time.sleep(30)
+    # time.sleep(30)
+    rb.text_out = line
+    print("Attempting to send telemetry over Iridium...")
+    status = rb.satellite_transfer()
+    
+    # loop as needed
+    retry = 3
+    while status[0] > 8:
+        time.sleep(10)
+        status = rb.satellite_transfer()
+        print("Retrying", retry, status)
+        retry += 1
+
+    if status[0] > 8:
+        print("Unsuccessful. Aborting!")
+    else:
+        print("Success. DONE!")
 
 # close telemetry file
 telemetry_file.close()
