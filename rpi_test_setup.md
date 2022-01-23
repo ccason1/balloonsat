@@ -21,12 +21,13 @@
    sudo bash x728-v2.1.sh
    ```  
 5. **Reboot** the RPi.  
-6. Instal individual sensors:
+6. Instal individual sensors and RockBLOCK:
    ```
    sudo pip3 install adafruit-circuitpython-ina219
    sudo pip3 install adafruit-circuitpython-tmp117
    sudo pip3 install adafruit-circuitpython-bme680
    sudo pip3 install adafruit-circuitpython-icm20x
+   sudo pip3 install adafruit-circuitpython-rockblock
    ```
 7. Clone repos to get prebuilt test scripts for sensors:
    ```
@@ -38,6 +39,8 @@
    git clone https://github.com/adafruit/Adafruit_CircuitPython_ICM20X.git
    cd ~
    git clone https://github.com/adafruit/Adafruit_CircuitPython_INA219.git
+   cd ~
+   git clone https://github.com/adafruit/Adafruit_CircuitPython_RockBlock.git
    ```
    
 ### Run test Scripts 
@@ -53,4 +56,6 @@ Path depends on where repos were cloned to.
 4. In `/Adafruit_CircuitPython_BME680/examples/` directory:  
    1. Read bme680 sensor: `python bme680_simpletest.py`  
 5. In `/Adafruit_CircuitPython_ICM20X/examples/` directory:
-   1. `python icm20x_icm20948_simpletest.py`  
+   1. `python icm20x_icm20948_simpletest.py`
+6. In `/Adafruit_CircuitPython_RockBlock/examples/` directory:
+   1. `python rockblock_simpletest.py`
