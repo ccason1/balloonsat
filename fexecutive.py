@@ -21,7 +21,7 @@ from picamera import PiCamera
 from datetime import datetime
 import serial
 from adafruit_rockblock import RockBlock
-#from gps3 import agps3
+from gps3 import agps3
 
 # 2. setup all components
 GPIO_PORT = 26          # psu
@@ -42,20 +42,31 @@ ina = INA219(i2c)
 uart = serial.Serial("/dev/ttyUSB0", 19200)
 rb = RockBlock(uart)
 
-#GPSDSocket creates a GPSD socket connection & request/retrieve GPSD output.
-#gps_socket = agps3.GPSDSocket()
+# GPSDSocket creates a GPSD socket connection & request-retrieves the GPSD output
+gps_socket = agps3.GPSDSocket()
 
-#DataStream unpacks the streamed gpsd data into python dictionaries.
-#data_stream = agps3.DataStream()
-#gps_socket.connect()
-#gps_socket.watch()
+# DataStream unpacks the streamed GPSD data into Python dictionaries
+data_stream = agps3.DataStream()
+gps_socket.connect()
+gps_socket.watch()
 
 #gcj02_lng_lat = [0.0,0.0]
 #bd09_lng_lat = [0.0,0.0]
 
-# for new_data in gps_socket:
-#     if new_data:
-#         data_stream.unpack(new_data)
+gps_lat = 0
+gps_lon = 0
+# TODO: What exactly is returned? What's in the dictionaries? Is this an infinite loop
+for new_data in gps_socket:
+    if new_data:
+        data_stream.unpack(new_data)
+        # WGS84 coordinates
+        gps_lat = data_stream.lat
+        gps_lon = data_stream.lon
+        print(gps_lat, gps_lon)
+    else:
+        print("No GPS data. Are you outside? :D")
+        break
+
 
 bme680.sea_level_pressure = 1013.25
 temperature_offset = -5
@@ -92,17 +103,7 @@ if os.stat(TELEMETRY_FILENAME).st_size == 0:
 #       systemctl enable hostapd 
 #       systemctl enable dnsmasq
 
-# 4. while loop running with 10 seconds delay after last iteration
-#        check power levels (voltage and capacity %)
-#        if low
-#            attempt to send message over iridium
-#            if unsuccessful
-#                alert to streaming webpage (???)
-#            stop all spawned processes
-#            shutdown     
-#        read all telemetry values and log them
-#        every minute (or every 6th iteration) attempt to send them over iridium
-
+# 4. main loop running with some delay after last iteration
 shut_down = False
 while True:
     # check for low voltage
@@ -145,6 +146,7 @@ while True:
     telemetry_file.flush()
 
     # time.sleep(30)
+    # rb.text_out = line[:120]  # library limits strings to 120 bytes
     rb.text_out = line
     print("Attempting to send telemetry over Iridium...")
     status = rb.satellite_transfer()
