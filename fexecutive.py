@@ -155,11 +155,11 @@ while True:
     
     # loop as needed
     retry = 0
-    while status[0] > 8:
+    while status[0] > 8 and retry > 0:
         time.sleep(10)
         status = rb.satellite_transfer()
         print("Retrying", retry, status)
-        retry += 1
+        retry -= 1
 
     if status[0] > 8:
         print("Unsuccessful. Aborting!")
