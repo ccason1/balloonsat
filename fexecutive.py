@@ -21,7 +21,7 @@ from picamera import PiCamera
 from datetime import datetime
 import serial
 from adafruit_rockblock import RockBlock
-from gps3 import agps3
+# from gps3 import agps3   # GPS library
 
 # 2. setup all components
 GPIO_PORT = 26          # psu
@@ -42,30 +42,32 @@ ina = INA219(i2c)
 uart = serial.Serial("/dev/ttyUSB0", 19200)
 rb = RockBlock(uart)
 
-# GPSDSocket creates a GPSD socket connection & request-retrieves the GPSD output
-gps_socket = agps3.GPSDSocket()
+# # GPS Loop Start <===================
+# # GPSDSocket creates a GPSD socket connection & request-retrieves the GPSD output
+# gps_socket = agps3.GPSDSocket()
 
-# DataStream unpacks the streamed GPSD data into Python dictionaries
-data_stream = agps3.DataStream()
-gps_socket.connect()
-gps_socket.watch()
+# # DataStream unpacks the streamed GPSD data into Python dictionaries
+# data_stream = agps3.DataStream()
+# gps_socket.connect()
+# gps_socket.watch()
 
-#gcj02_lng_lat = [0.0,0.0]
-#bd09_lng_lat = [0.0,0.0]
-
-gps_lat = 0
-gps_lon = 0
-# TODO: What exactly is returned? What's in the dictionaries? Is this an infinite loop
-for new_data in gps_socket:
-    if new_data:
-        data_stream.unpack(new_data)
-        # WGS84 coordinates
-        gps_lat = data_stream.lat
-        gps_lon = data_stream.lon
-        print(gps_lat, gps_lon)
-    else:
-        print("No GPS data. Are you outside? :D")
-        break
+# gps_lat = -360.0
+# gps_lon = -360.0
+# gps_alt = -100.0
+# # TODO: What exactly is returned? What's in the dictionaries? Is this an infinite loop
+# for new_data in gps_socket:
+#     if new_data:
+#         data_stream.unpack(new_data)
+#         # WGS84 coordinates
+#         gps_lat = data_stream.lat
+#         gps_lon = data_stream.lon
+#         gps_alt = data_stream.alt
+#         if gps_lat != 'n/a' and gps_lon != 'n/a':
+#             print(gps_lon, gps_lat, gps_alt)
+#         else:
+#             print("No GPS data. Are you indoors? :D")
+#             break
+# # GPS Loop End <===================
 
 
 bme680.sea_level_pressure = 1013.25
@@ -152,7 +154,7 @@ while True:
     status = rb.satellite_transfer()
     
     # loop as needed
-    retry = 3
+    retry = 0
     while status[0] > 8:
         time.sleep(10)
         status = rb.satellite_transfer()
