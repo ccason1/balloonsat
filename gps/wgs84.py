@@ -1,5 +1,14 @@
 from gps3 import agps3
-import time
+import os
+from datetime import datetime
+
+GPS_FILENAME = "/home/pi/flight_telemetry/gps_log.csv"
+telemetry_file =open(GPS_FILENAME,"a")
+
+if os.stat(GPS_FILENAME).st_size == 0:
+    telemetry_file.write("date_time," +
+                        "gps_lon,gps_lat,gps_alt\n")
+
 
 # GPSDSocket creates a GPSD socket connection & request/retrieve GPSD output.
 gps_socket = agps3.GPSDSocket()
@@ -8,10 +17,16 @@ data_stream = agps3.DataStream()
 gps_socket.connect()
 gps_socket.watch()
 
-for new_data in gps_socket:
-    if new_data:
-        data_stream.unpack(new_data)
-        if data_stream.lon != 'n/a' and data_stream.lat != 'n/a' and data_stream.alt != 'n/a':
-            print(data_stream.lon, data_stream.lat, data_stream.alt)
-            print('--------------------------------')
- 
+try:
+    for new_data in gps_socket:
+        if new_data:
+            data_stream.unpack(new_data)
+            now = datetime.now()
+            now = now.replace(microsecond=0)  # truncate ms
+            now.strftime('%y-%m-%d %H:%M:&S')
+            line = now + str(data_stream.lon) + "," + \
+                str(data_stream.lat) + "," + str(data_stream.alt) + "\n"
+            telemetry_file.write(line)
+            telemetry_file.flush()
+except KeyboardInterrupt:
+    telemetry_file.close()

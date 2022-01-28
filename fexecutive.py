@@ -21,7 +21,7 @@ from picamera import PiCamera
 from datetime import datetime
 import serial
 from adafruit_rockblock import RockBlock
-from gps3 import agps3   # GPS library
+# from gps3 import agps3   # GPS library
 
 # 2. setup all components
 GPIO_PORT = 26          # psu
@@ -42,19 +42,19 @@ ina = INA219(i2c)
 uart = serial.Serial("/dev/ttyUSB0", 19200)   # ttyUSBx has to be checked
 rb = RockBlock(uart)
 
-# GPS Setup Start <====================
-# GPSDSocket creates a GPSD socket connection & request-retrieves the GPSD output
-gps_socket = agps3.GPSDSocket()
+# # GPS Setup Start <====================
+# # GPSDSocket creates a GPSD socket connection & request-retrieves the GPSD output
+# gps_socket = agps3.GPSDSocket()
 
-# DataStream unpacks the streamed GPSD data into Python dictionaries
-data_stream = agps3.DataStream()
-gps_socket.connect()
-gps_socket.watch()
+# # DataStream unpacks the streamed GPSD data into Python dictionaries
+# data_stream = agps3.DataStream()
+# gps_socket.connect()
+# gps_socket.watch()
 
-gps_lat = -360.0
-gps_lon = -360.0
-gps_alt = -100.0
-# GPS Setup End <====================
+# gps_lat = -360.0
+# gps_lon = -360.0
+# gps_alt = -100.0
+# # GPS Setup End <====================
 
 bme680.sea_level_pressure = 1013.25
 temperature_offset = -5
@@ -83,7 +83,8 @@ def cpu_temp():
 # header line for telemetry file
 if os.stat(TELEMETRY_FILENAME).st_size == 0:
     telemetry_file.write("date_time," +
-                        "gps_lon,gps_lat,gps_alt,tmp117_temp_out," + 
+                        # "gps_lon,gps_lat,gps_alt," +
+                        "tmp117_temp_out," + 
                         "bme680_temp_in,bme680_gas,bme680_rel_hum,bme680_press,bme680_alt" +
                         "icm_acc_x,icm_acc_y,icm_acc_z," +
                         "icm_gyro_x,icm_gyro_y,icm_gyro_z," +
@@ -120,15 +121,15 @@ while True:
     # print(now)
 
     # get GPS coordinates
-    for new_data in gps_socket:
-        if new_data:
-            data_stream.unpack(new_data)
-            if data_stream.lon != 'n/a' and data_stream.lat != 'n/a' \
-                and data_stream.alt != 'n/a':
-                gps_lon = data_stream.lon
-                gps_lat = data_stream.lat
-                gps_alt = data_stream.alt
-                break
+    # for new_data in gps_socket:
+    #     if new_data:
+    #         data_stream.unpack(new_data)
+    #         if data_stream.lon != 'n/a' and data_stream.lat != 'n/a' \
+    #             and data_stream.alt != 'n/a':
+    #             gps_lon = data_stream.lon
+    #             gps_lat = data_stream.lat
+    #             gps_alt = data_stream.alt
+    #             break
 
     # get sensor data points
     data_points = [tmp117.temperature, 
@@ -141,11 +142,12 @@ while True:
     as_string = ','.join([str(round(d, 2)) for d in data_points])
 
     # compose data line
-    line = str(now) + ',' + \
-        str(gps_lon) + ',' + str(gps_lat) + ',' + str(gps_alt) + ',' + \
-        as_string + ',' + \
-        cpu_temp() + '\n'
-    print(len(line))  # 126 w/ tmp117
+    # line = str(now) + ',' + \
+    #     str(gps_lon) + ',' + str(gps_lat) + ',' + str(gps_alt) + ',' + \
+    #     as_string + ',' + \
+    #     cpu_temp() + '\n'
+    line = str(now) + ',' + as_string + ',' + cpu_temp() + '\n'
+    # print(len(line))  # 126 w/ tmp117
 
     # append line to telemetry file
     telemetry_file.write(line)
@@ -178,7 +180,7 @@ while True:
 telemetry_file.close()
 
 # close GPS socket
-gps_socket.close()
+# gps_socket.close()
 
 # shut down
 if shut_down:
