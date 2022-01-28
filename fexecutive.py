@@ -39,7 +39,7 @@ tmp117 = adafruit_tmp117.TMP117(i2c)
 icm = adafruit_icm20x.ICM20948(i2c)
 ina = INA219(i2c)
 
-uart = serial.Serial("/dev/ttyUSB1", 19200)
+uart = serial.Serial("/dev/ttyUSB0", 19200)   # ttyUSBx has to be checked
 rb = RockBlock(uart)
 
 # GPS Setup Start <====================
@@ -98,7 +98,7 @@ if os.stat(TELEMETRY_FILENAME).st_size == 0:
 
 # 4. main loop running with some delay after last iteration
 shut_down = False
-once_in_every_n_lines = 10         # number of telemetry loops between rockblock send
+once_in_every_n_lines = 35       # number of telemetry loops between rockblock send
 telemetry_line_counter = 0       # telemetry loop counter
 while True:
     # check for low voltage
@@ -123,14 +123,12 @@ while True:
     for new_data in gps_socket:
         if new_data:
             data_stream.unpack(new_data)
-            if data_stream.lon != 'n/a':
+            if data_stream.lon != 'n/a' and data_stream.lat != 'n/a' \
+                and data_stream.alt != 'n/a':
                 gps_lon = data_stream.lon
-            if data_stream.lat != 'n/a':
                 gps_lat = data_stream.lat
-            if data_stream.alt != 'n/a':
                 gps_alt = data_stream.alt
-        else:
-            break
+                break
 
     # get sensor data points
     data_points = [tmp117.temperature, 
