@@ -39,7 +39,7 @@ tmp117 = adafruit_tmp117.TMP117(i2c)
 icm = adafruit_icm20x.ICM20948(i2c)
 ina = INA219(i2c)
 
-uart = serial.Serial("/dev/ttyUSB0", 19200)
+uart = serial.Serial("/dev/ttyUSB1", 19200)
 rb = RockBlock(uart)
 
 # GPS Setup Start <====================
@@ -123,11 +123,11 @@ while True:
     for new_data in gps_socket:
         if new_data:
             data_stream.unpack(new_data)
-            if gps_lon != 'n/a':
+            if data_stream.lon != 'n/a':
                 gps_lon = data_stream.lon
-            if gps_lat != 'n/a':
+            if data_stream.lat != 'n/a':
                 gps_lat = data_stream.lat
-            if gps_alt != 'n/a':
+            if data_stream.alt != 'n/a':
                 gps_alt = data_stream.alt
         else:
             break
