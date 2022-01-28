@@ -1,4 +1,4 @@
-# Setup procedure
+# Setup procedure (TODO)
 
 ## 1. Micro SD card image
 
