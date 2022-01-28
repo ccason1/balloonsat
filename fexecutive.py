@@ -80,9 +80,7 @@ def cpu_temp():
     temp = temp.replace("\n","")
     return (temp.replace("temp=",""))
 
-# if os.stat("/home/pi/lawn_demo/data_log.cvs").st_size == 0:
-#     file.write("time,to,ti,gas,hum,press,alt,accx,accy,accz," +
-#         "gyrox,gyroy,gyroz,magnx,magny,magnz,vbus,ibus,pbus,tc,lat,lon\n")
+# header line for telemetry file
 if os.stat(TELEMETRY_FILENAME).st_size == 0:
     telemetry_file.write("date_time," +
                         "gps_lon,gps_lat,gps_alt,tmp117_temp_out," + 
@@ -91,6 +89,7 @@ if os.stat(TELEMETRY_FILENAME).st_size == 0:
                         "icm_gyro_x,icm_gyro_y,icm_gyro_z," +
                         "icm_magn_x,icm_magn_y,icm_magn_z," +
                         "ina_bus_vol,ina_bus_cur,ina_bus_pow," +
+                        "ups_vol,ups_cap," +
                         "temp_cpu\n")
 
 # 3. start wifi hot spot and streaming as a separate process
@@ -103,12 +102,12 @@ once_in_every_n_lines = 10         # number of telemetry loops between rockblock
 telemetry_line_counter = 0       # telemetry loop counter
 while True:
     # check for low voltage
-    voltage = read_voltage(bus)
-    print("Voltage: ", voltage)
-    capacity = read_capacity(bus)
-    print("Capacity: ", capacity)
-    if voltage < 3.00 or capacity < 20:
-        msg = "Battery low (vol<3.00V or cap<20%) vol=" + str(voltage) + " cap=" + str(capacity)
+    psu_voltage = read_voltage(bus)
+    print("Voltage: ", psu_voltage)
+    psu_capacity = read_capacity(bus)
+    print("Capacity: ", psu_capacity)
+    if psu_voltage < 3.00 or psu_capacity < 20:
+        msg = "Battery low (vol<3.00V or cap<20%) vol=" + str(psu_voltage) + " cap=" + str(psu_capacity)
         telemetry_file.write(msg)
         print(msg)
         shut_down = True
@@ -137,7 +136,8 @@ while True:
     data_points = [tmp117.temperature, 
         bme680.temperature, bme680.gas, bme680.relative_humidity, bme680.pressure, bme680.altitude, 
         *icm.acceleration, *icm.gyro, *icm.magnetic, 
-        ina.bus_voltage, ina.current, ina.power]
+        ina.bus_voltage, ina.current, ina.power,
+        psu_voltage, psu_capacity]
 
     # truncate to 2 decimal places
     as_string = ','.join([str(round(d, 2)) for d in data_points])
@@ -153,13 +153,11 @@ while True:
     telemetry_file.write(line)
     telemetry_file.flush()
 
+    # send line of telemetry over iridium rockblock
     if telemetry_line_counter % once_in_every_n_lines == 0:
 
-        # time.sleep(30)
-        # rb.text_out = line[:120]  # library limits strings to 120 bytes
-        # TODO: Send as data
-        # rb.data_out = line
-        rb.text_out = line   # library hacked (TODO: send as data)
+        rb.data_out = str.encode(line)
+        # rb.text_out = line   # library hacked (TODO: revert)
         print("Attempting to send telemetry over Iridium...")
         status = rb.satellite_transfer()
         
