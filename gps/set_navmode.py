@@ -15,6 +15,9 @@ ser = serial.Serial('/dev/ttyS0',9600,timeout=1)
 # last two bytes (added in later) are the CRC checksums
 cmd_navmode = b'\xB5\x62\x06\x24\x00\x01\x06\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 
+# receive message to confirm navmode
+cmd_poll_config = b'\xB5\x62\x06\x01\x06\x24'
+
 # calculate the cyclic redundancy check
 def calc_crc(cmd):
     ck_a = 0
@@ -25,23 +28,29 @@ def calc_crc(cmd):
         ck_b = ck_b + ck_a
     return (ck_a & 0xff, ck_b & 0xff)
 
-	
+
+# add checksums to navmode command
 ck_a, ck_b = calc_crc(cmd_navmode)
 cmd_navmode = cmd_navmode + bytes([ck_a,ck_b])
+
+# add checksums to poll command
+ck_a, ck_b = calc_crc(cmd_poll_config)
+cmd_poll_config = cmd_navmode + bytes([ck_a,ck_b])
 
 print(cmd_navmode.hex() + '\n\n')
 
 if True == ser.is_open:
     ser.write(cmd_navmode)
+    ser.write(cmd_poll_config)
     
-    its = 3
-    for _ in range(its):
+    times_to_poll = 5
+    for _ in range(times_to_poll):
         nmea = ser.read_until()
-        print("raw NMEA:")
-        print(nmea)
-        print('\n')
         print("decoded NMEA:")
-        print(nmea.decode())
+        try:
+            print(nmea.decode())
+        except Exception as e:
+            print(e)
         print('\n')
         
     time.sleep(1)
