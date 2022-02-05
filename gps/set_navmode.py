@@ -1,4 +1,5 @@
 import serial
+import time
 
 ser = serial.Serial('/dev/ttyS0',9600,timeout=1)
 
@@ -28,13 +29,22 @@ def calc_crc(cmd):
 ck_a, ck_b = calc_crc(cmd_navmode)
 cmd_navmode = cmd_navmode + bytes([ck_a,ck_b])
 
-print(cmd_navmode.hex())
+print(cmd_navmode.hex() + '\n\n')
 
 if True == ser.is_open:
     ser.write(cmd_navmode)
     
-    nmea = ser.read_until()
-    print(nmea.decode())
-    
+    its = 3
+    for _ in range(its):
+        nmea = ser.read_until()
+        print("raw NMEA:")
+        print(nmea)
+        print('\n')
+        print("decoded NMEA:")
+        print(nmea.decode())
+        print('\n')
+        
     time.sleep(1)
     ser.close()
+    
+    print("done")
