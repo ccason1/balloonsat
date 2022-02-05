@@ -1,6 +1,6 @@
-#import serial
+import serial
 
-#ser = serial.Serial('/dev/ttyS0',9600,timeout=1)
+ser = serial.Serial('/dev/ttyS0',9600,timeout=1)
 
 # command to set module to flight/nav mode
 # header = xB5 x62
