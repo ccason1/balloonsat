@@ -51,6 +51,8 @@ if True == ser.is_open:
     ser.write(cmd_navmode)
     ser.write(cmd_poll_config)
     
+    ser.flush()
+    
     times_to_poll = 5
     for _ in range(times_to_poll):
         nmea = ser.read_until()
