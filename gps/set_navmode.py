@@ -3,6 +3,9 @@ import time
 
 ser = serial.Serial('/dev/ttyS0',9600,timeout=1)
 
+# cmd2 enable NMEA version 4.10 to ouput BD sentences
+cmd_enable_BD = b'\xB5\x62\x06\x17\x14\x00\x00\x41\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00'
+
 # command to set module to flight/nav mode
 # header = xB5 x62
 # class = x06
@@ -15,7 +18,7 @@ ser = serial.Serial('/dev/ttyS0',9600,timeout=1)
 # last two bytes (added in later) are the CRC checksums
 cmd_navmode = b'\xB5\x62\x06\x24\x00\x01\x06\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 
-# receive message to confirm navmode
+# command to poll message to confirm navmode
 cmd_poll_config = b'\xB5\x62\x06\x01\x06\x24'
 
 # calculate the cyclic redundancy check
@@ -37,9 +40,14 @@ cmd_navmode = cmd_navmode + bytes([ck_a,ck_b])
 ck_a, ck_b = calc_crc(cmd_poll_config)
 cmd_poll_config = cmd_navmode + bytes([ck_a,ck_b])
 
+# add checksums to enable BD command
+ck_a, ck_b = calc_crc(cmd_enable_BD)
+cmd_enable_BD = cmd_enable_BD + bytes([ck_a,ck_b])
+
 print(cmd_navmode.hex() + '\n\n')
 
 if True == ser.is_open:
+    ser.write(cmd_enable_BD)
     ser.write(cmd_navmode)
     ser.write(cmd_poll_config)
     
