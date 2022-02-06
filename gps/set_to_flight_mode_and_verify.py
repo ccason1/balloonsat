@@ -42,5 +42,3 @@ if True == ser.is_open:
         
     time.sleep(1)
     ser.close()
-    
-    print("done")
