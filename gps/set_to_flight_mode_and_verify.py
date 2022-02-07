@@ -23,9 +23,6 @@ def set_to_flight_mode():
     if ser.is_open:
     
         ser.write(cmd_navmode)
-            
-        time.sleep(1)
-        ser.close()
     
     
 def verify_in_flight_mode():
@@ -42,7 +39,7 @@ def verify_in_flight_mode():
         # (i.e. whether it's in flight mode or not)
         dyn_model_byte = ser.read()
         
-        # byte that means its in airborne with < 1g mode
+        # byte that means it's in "airborne, < 1g" mode
         # i.e. flight mode, the one we want
         airborne_less_than_1g = b'\x06'
         
@@ -53,3 +50,12 @@ def verify_in_flight_mode():
             # navigation mode not correct
             # location accuracy may be reduced
             return False
+        
+
+def close_serial():
+    """Closes the serial"""
+    
+    # sleep to make sure everything's written and read
+    time.sleep(1)
+    
+    ser.close()
