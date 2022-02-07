@@ -23,7 +23,7 @@ def open_serial(port='/dev/ttyS0', baudrate=9600, timeout=5):
 
 
 def set_to_flight_mode():
-    """Sets the u-blox M8 receiver's dynamic platform model to airborn with < 1g"""
+    """Set the u-blox M8 receiver's dynamic platform model to airborn with < 1g"""
     
     if ser.is_open:
     
@@ -31,7 +31,7 @@ def set_to_flight_mode():
     
     
 def verify_in_flight_mode():
-    """Returns True if the u-blox M8 receiver's dynamic platform model is set to airborne with < 1g"""
+    """Return True if the u-blox M8 receiver's dynamic platform model is set to airborne with < 1g"""
     
     if ser.is_open:
         
@@ -58,7 +58,7 @@ def verify_in_flight_mode():
         
 
 def close_serial():
-    """Closes the serial"""
+    """Close the serial"""
     
     # sleep to make sure everything's written and read
     time.sleep(1)
@@ -67,7 +67,7 @@ def close_serial():
 
 
 def set_to_flight_mode_and_verify():
-    """Easy function to run everything in the module; Returns the result of verify_in_flight_mode()"""
+    """Easy function to run everything in the module; Return the result of verify_in_flight_mode()"""
 
     open_serial()
     set_to_flight_mode()
