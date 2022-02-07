@@ -1,7 +1,7 @@
 import serial
 import time
 
-ser = serial.Serial('/dev/ttyS0',9600,timeout=10)
+ser = serial.Serial('/dev/ttyS0', 9600, timeout=5)
 
 # command to set module to flight/nav mode
 # header = xB5 x62
@@ -10,7 +10,7 @@ ser = serial.Serial('/dev/ttyS0',9600,timeout=10)
 # x24 x00 is little endian 2 byte length of UBX message payload
 # xFF xFF bitmask
 # x06 for airborne with < 1g
-# x00 default settings for the rest of the payload
+# default settings for the rest of the payload
 # last two bytes are the CRC checksums calculated by u-center
 cmd_navmode = b'\xB5\x62\x06\x24\x24\x00\xFF\xFF\x06\x03\x00\x00\x00\x00\x10\x27\x00\x00\x05\x00\xFA\x00\xFA\x00\x64\x00\x5E\x01\x00\x3C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x84\x08'
 
