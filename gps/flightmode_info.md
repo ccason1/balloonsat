@@ -43,4 +43,4 @@ After shutting down the Raspberry Pi and removing power, then powering back up, 
 After rebooting the Raspberry Pi without removing power, whatever setting it was on from before the reboot remains.
 
 ### Time Interval
-I have not found anything in the protocol about whether or not the dynamic platform model is reset after a period of time without power cycling. I tested this over a period of 1.5 hours and the setting remained.
+I have not found anything in the protocol about whether or not the dynamic platform model is reset after a period of time without power cycling. When I tested this, the setting did not change after 1.5 hours.
