@@ -17,11 +17,7 @@ def append_new_data(file='flight_data.csv', include_header=False):
     args = ['gpscsv', '-n', '1', '--header', header_arg]
     cmd = subprocess.run(args, capture_output=True, text=True)
     
-    # create the file if it doesn't already exist
-    #f = open(file, 'w')
-    #f.close()
-    
     # write the command output to the file
-    f = open(file, 'a')
-    f.write(cmd.stdout)
-    f.close()
+    with open(file, 'a') as f:
+        f.write(cmd.stdout)
+        f.close()
