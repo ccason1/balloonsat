@@ -1,23 +1,68 @@
-import subprocess
+from gps import *
+import time
+import csv
 
-def append_new_data(file='flight_data.csv', include_header=False):
-    """Append one line of csv location data to a file
+class GnssDataGetter:
 
-    Keyword arguments:
-    file -- the file where data will be appended; creates a new file if one doesn't already exist (default 'flight_data.csv')
-    include_header -- set to True to append the header fields to the file (default False)
-    """
+    def __init__(self, *data_output_options, filename='flight_data.csv'):
+        self.data_output_options = list(data_output_options)
+        self.session = gps(mode=WATCH_ENABLE)
+        self.output_file = open(filename, 'a')
+        self.writer = csv.writer(self.output_file)
+
+    def get_report(self):
+        report = None
+        try:
+            report = self.session.next()
+            if report['class'] == 'DEVICE':
+                self.session.close()
+                self.session = gps(mode=gps)
+        except StopIteration:
+            print("GPSD has terminated")
+        
+        return report
     
-    if include_header:
-        header_arg = '1'
-    else:
-        header_arg = '0'
+    def write_data(self, timeout_sec=1.5, write_header=False):
+        report = self.get_report()
+        start = time.time()
+        
+        # class TPV is the only class that contains the data we want
+        # the following link has information about TPV and the other gpsd classes
+        # gpsd.gitlab.io/gpsd/gpsd_json.html
+        while report['class'] != 'TPV':
+            report = self.get_report()
+            if time.time() - start > timeout_sec:
+                print('timeout')
+                return
+        
+        header = self.data_output_options
+        
+        if write_header:
+            print(header)
+            self.writer.writerow(header)
+        
+        vals = []
+        for key in header:
+            if key in list(report):
+                vals.append(report[key])
+            else:
+                vals.append('')
+        
+        self.writer.writerow(vals)
+        print(vals)
+        
+    def close_file(self):
+        self.output_file.close()
+        
+
+def main():
+    dg = GnssDataGetter('time', 'lat', 'hi', 'lon')
+    dg.write_data(write_header=True)
+    dg.close_file()
     
-    # run the gpsd command to get the current location data
-    args = ['gpscsv', '-n', '1', '--header', header_arg]
-    cmd = subprocess.run(args, capture_output=True, text=True)
-    
-    # write the command output to the file
-    with open(file, 'a') as f:
-        f.write(cmd.stdout)
-        f.close()
+
+if __name__ == '__main__':
+    main()
+
+
+
