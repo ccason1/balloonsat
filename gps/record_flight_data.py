@@ -1,6 +1,6 @@
 # Example:
 # dg = GnssDataGetter('time', 'lat', 'lon', 'altHAE', filename='data.csv')
-# dg.write_data(write_header=True)
+# dg.write_data()
 # dg.write_data()
 #
 # output:
@@ -34,6 +34,9 @@ class GnssDataGetter:
         self.session = gps(mode=WATCH_ENABLE)
         self.output_file = open(filename, 'a')
         self.writer = csv.writer(self.output_file)
+        
+        # write the header to the file
+        self.writer.writerow(self.data_output_options)
 
     def get_report(self):
         """Return a dictionary-like object containing a packet of GNSS data"""
@@ -49,15 +52,13 @@ class GnssDataGetter:
         
         return report
     
-    def write_data(self, timeout_sec=2, write_header=False):
+    def write_data(self, timeout=1.5):
         """Write the current GNSS data to a csv file.
        
-       Keyword arguments:
-         timeout
-             time in seconds to allow data retrieval before breaking (default 2)
-         write_header 
-             writes the fields to the csv as a header; do this on the first run (default False)
-       """
+        Keyword argument:
+            timeout
+                time in seconds to allow data retrieval before breaking (default 2)
+        """
     
         report = self.get_report()
         start = time.time()
@@ -67,24 +68,21 @@ class GnssDataGetter:
         # gpsd.gitlab.io/gpsd/gpsd_json.html
         while report['class'] != 'TPV':
             report = self.get_report()
-            if time.time() - start > timeout_sec:
+            if time.time() - start > timeout:
+                # write timed out message with correct csv format
+                # looks something like 'timed out,,,'
+                timed_out_line = ["timed out"] + ['' for _ in range(len(self.data_output_options)-1)]
+                self.writer.writerow(timed_out_line)
                 return
         
-        header = self.data_output_options
-        
-        if write_header:
-            print(header)
-            self.writer.writerow(header)
-        
         vals = []
-        for key in header:
+        for key in self.data_output_options:
             if key in list(report):
                 vals.append(report[key])
             else:
                 vals.append('')
         
         self.writer.writerow(vals)
-        print(vals)
         
     def close_file(self):
         """Close the output_file--this function should be called after the final write operation"""
@@ -93,8 +91,8 @@ class GnssDataGetter:
         
 
 def main():
-    dg = GnssDataGetter('time', 'lat', 'hi', 'lon')
-    dg.write_data(write_header=True)
+    dg = GnssDataGetter('time', 'lat', 'lon', 'altHAE')
+    dg.write_data()
     dg.write_data()
     dg.close_file()
     
