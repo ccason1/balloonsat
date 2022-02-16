@@ -1,8 +1,9 @@
 # Example:
 # dg = GnssDataGetter('time', 'lat', 'lon', 'altHAE', filename='data.csv')
-# dg.write_data()
-# dg.write_data()
-#
+# dg.write_current_packet()
+# dg.write_current_packet()
+# dg.close_file()
+# 
 # output:
 # time,lat,lon,altHAE
 # 2022-02-14T15:51:52.000Z,39.1234567,-105.1234567,1716.123
@@ -52,12 +53,12 @@ class GnssDataGetter:
         
         return report
     
-    def get_current_packet(self, timeout=1.5):
+    def write_current_packet(self, timeout=1.5):
         """Write the current GNSS data to a csv file.
        
         Keyword argument:
             timeout
-                time in seconds to allow data retrieval before breaking (default 2)
+                time in seconds to allow data retrieval before breaking (default 1.5)
         """
     
         report = self.get_report()
@@ -92,8 +93,8 @@ class GnssDataGetter:
 
 def main():
     dg = GnssDataGetter('time', 'lat', 'lon', 'altHAE')
-    dg.write_data()
-    dg.write_data()
+    dg.write_current_packet()
+    dg.write_current_packet()
     dg.close_file()
     
 
