@@ -52,7 +52,7 @@ class GnssDataGetter:
         
         return report
     
-    def write_data(self, timeout=1.5):
+    def get_current_packet(self, timeout=1.5):
         """Write the current GNSS data to a csv file.
        
         Keyword argument:
